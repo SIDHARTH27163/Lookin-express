@@ -61,3 +61,4 @@ class CommonDao {
         }
     }
 }
+module.exports = CommonDao;

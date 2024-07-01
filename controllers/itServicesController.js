@@ -18,3 +18,4 @@ class ITServicesController
     }
 
 }
+module.exports = ITServicesController;

@@ -39,3 +39,5 @@ class ITServicesDao {
         }
     }
 }
+
+module.exports = ITServicesDao;
