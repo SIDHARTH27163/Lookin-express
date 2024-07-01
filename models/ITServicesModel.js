@@ -1,20 +1,18 @@
-// models/AdminProfile.js
 const { DataTypes } = require('sequelize');
 const sequelize = require('../database/mysql/db');
 
-const AdminProfile = sequelize.define('AdminProfile', {
+const ITservice = sequelize.define('ITservice', {
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true
     },
-    profile_name: {
+    name: {
         type: DataTypes.STRING,
-        allowNull: false,
-        unique: true
-    }
-}, {
-    timestamps: false
+        allowNull: false
+    },
+    status: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
+    },
 });
-
-module.exports = AdminProfile;
