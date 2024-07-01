@@ -1,4 +1,3 @@
-// models/AdminProfile.js
 const { DataTypes } = require('sequelize');
 const sequelize = require('../database/mysql/db');
 

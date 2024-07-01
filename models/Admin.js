@@ -1,4 +1,3 @@
-// models/Admin.js
 const { DataTypes } = require('sequelize');
 const sequelize = require('../database/mysql/db');
 const AdminProfile = require('./AdminProfile');
@@ -35,7 +34,8 @@ const Admin = sequelize.define('Admin', {
         references: {
             model: AdminProfile,
             key: 'id'
-        }
+        },
+        allowNull: true // Allow null to handle cases where profile is not provided
     },
     remember_token: {
         type: DataTypes.STRING,

@@ -17,6 +17,13 @@ class AdminDao {
                 };
             }
 
+            // Check if the profileType exists
+            let profile = await AdminProfile.findOne({ where: { profile_name: admin.profileType } });
+            if (!profile) {
+                // Create the profile if it doesn't exist
+                profile = await AdminProfile.create({ profile_name: admin.profileType });
+            }
+
             // Hash the password
             const hashedPassword = await bcrypt.hash(admin.password, 10);
 
@@ -26,13 +33,12 @@ class AdminDao {
                 name: admin.name,
                 phoneNumber: admin.phoneNumber,
                 password: hashedPassword,
-                profile_id: admin.profile_id
+                profile_id: profile.id // Use the profile_id from AdminProfile
             });
 
             return {
                 status: 201, // Created status code
                 message: 'Admin created successfully', 
-                // message 
                 adminId: newAdmin.id
             };
         } catch (error) {
