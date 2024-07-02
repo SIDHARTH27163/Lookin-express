@@ -14,7 +14,14 @@ class ITServicesDao {
     constructor() {
         this.commonDao = new commonDao(); 
     }
-
+    /**
+     * This methos used for save or create IT services by logged in Admin
+     * 
+     * @author Vishal
+     * @since 01 July 2024
+     * @param {*} serviceData 
+     * @returns 
+     */
     async saveITService(serviceData) {
         try {
             // Check if the service already exists
@@ -36,6 +43,29 @@ class ITServicesDao {
             };
         } catch (error) {
             throw new Error('Error creating IT service: ' + error.message);
+        }
+    }
+
+    /**
+     * This methos used for Update  IT services by logged in Admin
+     * 
+     * @author Vishal
+     * @since 01 July 2024
+     * @param {*} serviceData 
+     * @returns 
+     */
+    async updateITService(serviceData) {
+        try {
+            // Create a new service using common mehtod saveData
+            const updateService = await this.commonDao.saveData(serviceData, ITservice);
+
+            return {
+                status: 201, // Created status code
+                message: 'Service updated successfully',
+                serviceId: updateService.id // Assuming newService has an 'id' attribute
+            };
+        } catch (error) {
+            throw new Error('Error updating IT service: ' + error.message);
         }
     }
 }
