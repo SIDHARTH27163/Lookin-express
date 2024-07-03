@@ -1,7 +1,14 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../database/mysql/db');
 const AdminProfile = require('./AdminProfile');
-
+/**
+     * This file is used for database integration for admin related operations
+     * 
+     * @author Sidharth Guleria
+     * @since 30 June 2024
+     *  
+     * @returns 
+     */
 const Admin = sequelize.define('Admin', {
     id: {
         type: DataTypes.INTEGER,

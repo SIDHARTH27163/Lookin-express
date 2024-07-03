@@ -1,4 +1,11 @@
-// server.js
+ /**
+     * This file is used as entry point for the project 
+     * 
+     * @author Sidharth Guleria
+     * @since 25 June 2024
+     *  
+     * @returns 
+     */
 const express = require('express');
 const bodyParser = require('body-parser');
 const createTables = require('./database/mysql/createTables');

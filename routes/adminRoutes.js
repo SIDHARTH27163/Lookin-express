@@ -1,4 +1,12 @@
 // routes/adminRoutes.js
+/**
+     * This file is used as entry for routes point as admin for the project 
+     * 
+     * @author Sidharth Guleria
+     * @since 30 June 2024
+     *  
+     * @returns 
+     */
 const express = require('express');
 const AdminController = require('../controllers/adminController');
 const ITServicesController = require('../controllers/itServicesController');

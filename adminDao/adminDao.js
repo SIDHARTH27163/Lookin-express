@@ -4,7 +4,14 @@ const jwt = require('jsonwebtoken');
 const Admin = require('../models/Admin');
 const AdminProfile = require('../models/AdminProfile');
 
-
+/**
+     * This file is used as admin point for the project 
+     * 
+     * @author Sidharth Guleria
+     * @since 30 June 2024
+     *  
+     * @returns 
+     */
 class AdminDao {
     async createAdmin(admin) {
         try {
