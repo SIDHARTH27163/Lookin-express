@@ -17,5 +17,5 @@ const itServicesController = new ITServicesController();
 router.post('/create', (req, res) => adminController.createAdmin(req, res));
 router.post('/admin_login', (req, res) => adminController.login(req, res));
 router.get('/getusers' , (req, res)=>adminController.users(req, res));
-router.get('/add-it-service' , (req, res)=>itServicesController.saveITService(req, res));
+router.post('/add-it-service' , (req, res)=>itServicesController.saveITService(req, res));
 module.exports = router;

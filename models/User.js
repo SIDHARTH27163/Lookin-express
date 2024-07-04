@@ -1,19 +1,40 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../database/mysql/db');
-const AdminProfile = require('./AdminProfile');
+
 /**
-     * This file is used for database integration for admin related operations
+ * This file is used for database integration for user related operations
+ * 
+ * @author Sidharth Guleria
+ * @since 04 Jul 2024
+ * 
+ * @returns 
+ */
+const User = sequelize.define('User', {
+    /**
+     * This is used to define the userId as alphanumeric
      * 
      * @author Sidharth Guleria
-     * @since 30 June 2024
-     *  
+     * @since 04 July 2024
+     * 
      * @returns 
      */
-const Admin = sequelize.define('Admin', {
-    id: {
+    userId: {
+        type: DataTypes.STRING,
+        primaryKey: true,
+        allowNull: false,
+        unique: true,
+        validate: {
+            isAlphanumeric: true
+        }
+    },
+    status: {
         type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true
+        defaultValue: 0
+    },
+    profile_type: {
+        type: DataTypes.INTEGER,
+        defaultValue: 100,
+        allowNull: false
     },
     email: {
         type: DataTypes.STRING,
@@ -32,18 +53,6 @@ const Admin = sequelize.define('Admin', {
         type: DataTypes.STRING,
         allowNull: false
     },
-    status: {
-        type: DataTypes.INTEGER,
-        defaultValue: 0
-    },
-    profile_id: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: AdminProfile,
-            key: 'id'
-        },
-        allowNull: true // Allow null to handle cases where profile is not provided
-    },
     remember_token: {
         type: DataTypes.STRING,
         allowNull: true
@@ -54,6 +63,4 @@ const Admin = sequelize.define('Admin', {
     }
 });
 
-Admin.belongsTo(AdminProfile, { foreignKey: 'profile_id' });
-
-module.exports = Admin;
+module.exports = User;

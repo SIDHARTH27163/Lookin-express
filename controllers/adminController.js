@@ -7,7 +7,7 @@
      * @returns 
      */
 // controllers/adminController.js
-const AdminDao = require('../adminDao/adminDao');
+const AdminDao = require('../dao/adminDao/adminDao');
 
 class AdminController {
     constructor() {

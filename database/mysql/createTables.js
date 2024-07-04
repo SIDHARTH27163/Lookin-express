@@ -1,22 +1,23 @@
 // createTables.js
 const sequelize = require('./db');
-const Admin = require('../../models/Admin');
-const AdminProfile = require('../../models/AdminProfile');
+const User = require('../../models/User');
+const UserProfile = require('../../models/UserProfile');
+
 /**
-     * This file is used for creating tables in database 
-     * 
-     * @author Sidharth Guleria
-     * @since 30 June 2024
-     *  
-     * @returns 
-     */
+ * This file is used for creating tables in the database 
+ * 
+ * @author Sidharth Guleria
+ * @since 30 June 2024
+ *  
+ * @returns {Promise<void>}
+ */
 async function createTables() {
     try {
-        // Define the relationship between Admin and AdminProfile
-        Admin.belongsTo(AdminProfile, { foreignKey: 'profile_id' });
-        AdminProfile.hasMany(Admin, { foreignKey: 'profile_id' });
+        // Define the relationship between User and UserProfile
+        User.hasOne(UserProfile, { foreignKey: 'user_id' });
+        UserProfile.belongsTo(User, { foreignKey: 'user_id' });
 
-        // Sync the models with the database
+        // Sync the models with the database, only create if not exists
         await sequelize.sync({ alter: true });
         console.log('Tables created successfully');
     } catch (error) {

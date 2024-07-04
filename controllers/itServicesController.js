@@ -13,7 +13,7 @@ class ITServicesController
             res.status(201).json(result);
         } catch (err) {
             console.error('Error in API:', err);
-            res.status(500).json({ message: error.message });
+            res.status(500).json({ message: err.message });
         }
     }
 

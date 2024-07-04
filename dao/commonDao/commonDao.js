@@ -60,5 +60,18 @@ class CommonDao {
             throw err;
         }
     }
+
+/**
+     * provide the id genrator operation
+     * 
+     * @author Sidharth Guleria
+     * @since 04 Jul 2024
+     *  
+     * @returns 
+     */
+    static generateId(tableName) {
+        const prefix = tableName.substring(0, 3).toLowerCase();
+        return `${prefix}${Date.now()}${Math.floor(Math.random() * 1000)}`;
+    }
 }
 module.exports = CommonDao;
