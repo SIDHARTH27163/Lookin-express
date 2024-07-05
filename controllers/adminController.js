@@ -1,5 +1,13 @@
+/**
+     * This file is used as entry point for the admin to pass req to dao 
+     * 
+     * @author Sidharth Guleria
+     * @since 25 June 2024
+     *  
+     * @returns 
+     */
 // controllers/adminController.js
-const AdminDao = require('../adminDao/adminDao');
+const AdminDao = require('../dao/adminDao/adminDao');
 
 class AdminController {
     constructor() {

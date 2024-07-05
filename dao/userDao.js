@@ -3,7 +3,14 @@ const dynamoDB = require('../database/dbConfig');
 const { v4: uuidv4 } = require('uuid');
 const { checkUserExists } = require('../utils/userValidation');
 const tableName = 'users';
-
+/**
+     * This file is used for handling user related operations
+     * 
+     * @author Sidharth Guleria
+     * @since 25 June 2024
+     *  
+     * @returns 
+     */
 const createUser = async (user) => {
     try {
         const userExists = await checkUserExists(user.email, user.phone);

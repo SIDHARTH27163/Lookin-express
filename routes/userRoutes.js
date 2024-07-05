@@ -1,7 +1,14 @@
 // routes/userRoutes.js
 const express = require('express');
 const userController = require('../controllers/userController');
-
+/**
+     * This file is used as entry point for the project  as user
+     * 
+     * @author Sidharth Guleria
+     * @since 25 June 2024
+     *  
+     * @returns 
+     */
 const router = express.Router();
 
 router.post('/users', userController.createUser);

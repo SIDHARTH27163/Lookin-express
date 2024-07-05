@@ -1,10 +1,17 @@
 // dao/AdminDao.js
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const Admin = require('../models/Admin');
-const AdminProfile = require('../models/AdminProfile');
-
-
+const Admin = require('../../models/User');
+const AdminProfile = require('../../models/UserProfile');
+const CommonDao = require('../commonDao/commonDao');
+/**
+     * This file is used as admin point for the project 
+     * 
+     * @author Sidharth Guleria
+     * @since 30 June 2024
+     *  
+     * @returns 
+     */
 class AdminDao {
     async createAdmin(admin) {
         try {
@@ -12,38 +19,47 @@ class AdminDao {
             const existingAdmin = await Admin.findOne({ where: { email: admin.email } });
             if (existingAdmin) {
                 return {
-                    status: 409, // Conflict status code
+                    status: 409,
                     message: 'User already exists'
                 };
-            }
-
-            // Check if the profileType exists
-            let profile = await AdminProfile.findOne({ where: { profile_name: admin.profileType } });
-            if (!profile) {
-                // Create the profile if it doesn't exist
-                profile = await AdminProfile.create({ profile_name: admin.profileType });
             }
 
             // Hash the password
             const hashedPassword = await bcrypt.hash(admin.password, 10);
 
-            // Create the new admin
-            const newAdmin = await Admin.create({
+            // Generate adminId using CommonDao
+            const adminId = CommonDao.generateId('Admin');
+
+            // Create the new admin data object
+            const newAdminData = {
+                userId: adminId,
                 email: admin.email,
                 name: admin.name,
                 phoneNumber: admin.phoneNumber,
                 password: hashedPassword,
-                profile_id: profile.id // Use the profile_id from AdminProfile
-            });
+            };
+/**
+     * provide the insertion opertaion
+     * 
+     * @author Sidharth Guleria
+     * @since 04 Jul 2024
+     *  
+     * @returns 
+     */
+            // Save the new admin using CommonDao
+            const newAdmin = await new CommonDao().saveData(newAdminData, Admin);
 
             return {
-                status: 201, // Created status code
-                message: 'Admin created successfully', 
-                adminId: newAdmin.id
+                status: 201,
+                message: 'Admin created successfully',
+                adminId: newAdmin.userId
             };
         } catch (error) {
+            console.log(error);
             throw new Error('Error creating admin: ' + error.message);
         }
+    
+    
     }
 
     async getAdminByEmail(email) {
@@ -76,7 +92,7 @@ class AdminDao {
 
     async getAllAdmins() {
         try {
-            const admins = await Admin.findAll({ include: AdminProfile });
+            const admins = await Admin.findAll();
             return admins;
         } catch (error) {
             throw new Error('Error getting admins: ' + error.message);
