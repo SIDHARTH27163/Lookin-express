@@ -15,7 +15,7 @@ class ITServicesDao {
         this.commonDao = new commonDao(); 
     }
     /**
-     * This methos used for save or create IT services by logged in Admin
+     * This method used for save or create IT services by logged in Admin
      * 
      * @author Vishal
      * @since 01 July 2024
@@ -47,7 +47,7 @@ class ITServicesDao {
     }
 
     /**
-     * This methos used for Update  IT services by logged in Admin
+     * This method used for Update  IT services by logged in Admin
      * 
      * @author Vishal
      * @since 01 July 2024
@@ -68,6 +68,25 @@ class ITServicesDao {
             throw new Error('Error updating IT service: ' + error.message);
         }
     }
+
+   /**
+     * This method used for get all ITservices.
+     * 
+     * @author Vishal
+     * @since 02 July 2024
+     * @returns 
+     */
+    async getAllITServices() {
+        try {
+            // Assuming ITservice is a Sequelize model
+            const itServices = await ITservice.findAll(); // Await the findAll() method call
+            return itServices; // Return the fetched IT services
+        } catch (error) {
+            // Catch any errors that occur during the async operation
+            throw new Error('Error getting IT services: ' + error.message);
+        }
+    }
+    
 }
 
 module.exports = ITServicesDao;
