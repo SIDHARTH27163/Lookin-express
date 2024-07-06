@@ -1,18 +1,21 @@
-const { DataTypes } = require('sequelize');
+const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../database/mysql/db');
+const CommonDao = require('../dao/commonDao/commonDao');
+
 /**
-     * This file is created by vishal kumar
-     * 
-     * @author Vishal kumar
-     * @since 30 June 2024
-     *  
-     * @returns 
-     */
-const ITservice = sequelize.define('it_services', {
+ * This file is created by Vishal Kumar
+ * 
+ * @author Vishal Kumar
+ * @since 30 June 2024
+ */
+class ITservice extends Model {}
+
+ITservice.init({
     id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true
+        type: DataTypes.STRING,
+        primaryKey: true,
+        allowNull: false,
+        defaultValue: () => CommonDao.generateId('it_services') // Generate custom ID
     },
     name: {
         type: DataTypes.STRING,
@@ -26,29 +29,27 @@ const ITservice = sequelize.define('it_services', {
         type: DataTypes.TEXT,
         allowNull: false
     },
-    image:{
+    image: {
         type: DataTypes.BLOB,
         allowNull: false
     },
-    created_by:{
-        type: DataTypes.BLOB,
+    created_by: {
+        type: DataTypes.STRING,
         allowNull: true
     },
-    updated_by:{
-        type: DataTypes.BLOB,
+    updated_by: {
+        type: DataTypes.STRING,
         allowNull: true
     },
     timestamp: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW
     }
-/**
-     * last three feilds updated   by Sid 
-     * 
-     * @author Sidharth Guleria
-     * @since 04 Jul 2024
-     *  
-     * @returns 
-     */
+}, {
+    sequelize,
+    modelName: 'ITservice',
+    tableName: 'it_services',
+    timestamps: false
 });
+
 module.exports = ITservice;

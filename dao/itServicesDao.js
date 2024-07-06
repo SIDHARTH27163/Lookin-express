@@ -1,30 +1,15 @@
-/**
- * Purpose: The code defines a ITServicesDao class responsible for interacting with a data store, 
- * presumably to save IT services and other operations.
- * 
- * @author Vishal
- */
+// itServicesDao.js
 
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const commonDao = require('../dao/commonDao/commonDao');
 const ITservice = require('../models/ITServicesModel'); // Assuming this is your Sequelize model for IT services
+const CommonDao = require('../dao/commonDao/commonDao');
 
 class ITServicesDao {
     constructor() {
-        this.commonDao = new commonDao(); 
+        this.commonDao = new CommonDao();
     }
-    /**
-     * This method used for save or create IT services by logged in Admin
-     * 
-     * @author Vishal
-     * @since 01 July 2024
-     * @param {*} serviceData 
-     * @returns 
-     */
-    async saveITService(serviceData) {
+
+    async saveITService(serviceData, fileData) {
         try {
-            // Check if the service already exists
             const existingService = await ITservice.findOne({ where: { name: serviceData.name } });
             if (existingService) {
                 return {
@@ -33,60 +18,55 @@ class ITServicesDao {
                 };
             }
 
-            // Create a new service using common mehtod saveData
-            const newService = await this.commonDao.saveData(serviceData, ITservice);
+            if (fileData) {
+                serviceData.image = fileData.path; // Update serviceData with imagePath
+            }
 
+         
+            const result = await this.commonDao.saveData(serviceData, ITservice);
             return {
-                status: 201, // Created status code
-                message: 'Service created successfully',
-                serviceId: newService.id // Assuming newService has an 'id' attribute
+                status: 201,
+                message: 'IT Service saved successfully',
+                data: result
             };
         } catch (error) {
-            throw new Error('Error creating IT service: ' + error.message);
+            console.error('Error inserting IT services:', error);
+            throw new Error('Error inserting IT services: ' + error.message);
         }
     }
 
-    /**
-     * This method used for Update  IT services by logged in Admin
-     * 
-     * @author Vishal
-     * @since 01 July 2024
-     * @param {*} serviceData 
-     * @returns 
-     */
-    async updateITService(serviceData) {
-        try {
-            // Create a new service using common mehtod saveData
-            const updateService = await this.commonDao.saveData(serviceData, ITservice);
 
-            return {
-                status: 201, // Created status code
-                message: 'Service updated successfully',
-                serviceId: updateService.id // Assuming newService has an 'id' attribute
-            };
+    async updateITService(idToUpdate, updateData) {
+        try {
+            const updatedService = await this.commonDao.update(idToUpdate, updateData, ITservice);
+
+            if (updatedService) {
+                return {
+                    status: 200,
+                    message: 'IT Service updated successfully',
+                    data: updatedService
+                };
+            } else {
+                return {
+                    status: 404,
+                    message: 'IT Service not found'
+                };
+            }
         } catch (error) {
+            console.error('Error updating IT service:', error);
             throw new Error('Error updating IT service: ' + error.message);
         }
     }
 
-   /**
-     * This method used for get all ITservices.
-     * 
-     * @author Vishal
-     * @since 02 July 2024
-     * @returns 
-     */
     async getAllITServices() {
         try {
-            // Assuming ITservice is a Sequelize model
-            const itServices = await ITservice.findAll(); // Await the findAll() method call
-            return itServices; // Return the fetched IT services
+            const itServices = await ITservice.findAll();
+            return itServices;
         } catch (error) {
-            // Catch any errors that occur during the async operation
+            console.error('Error getting IT services:', error);
             throw new Error('Error getting IT services: ' + error.message);
         }
     }
-    
 }
 
 module.exports = ITServicesDao;
