@@ -65,10 +65,10 @@ class ITServicesController
 
 async updateitServices(req, res) {
     try {
-        const { id } = req.params; // Extract id from request params
+      
         const updateData = req.body; // Assuming update data comes from request body
 
-        const result = await this.ITServicesDao.updateITService(id, updateData); // Pass id and updateData
+        const result = await this.ITServicesDao.updateITService( updateData); // Pass id and updateData
 
         res.json(result);
     } catch (error) {

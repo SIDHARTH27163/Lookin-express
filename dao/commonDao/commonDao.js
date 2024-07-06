@@ -17,16 +17,15 @@ class CommonDao {
      * @param {Model} modelName - Sequelize model for the object type.
      * @returns {Promise<Object>} - Saved or updated object.
      */
-    async saveData(requestData, modelName , idToUpdate) {
+    async saveData(requestData, modelName ) {
         try {
-            // requestData.id = CommonDao.generateId(modelName.name);
-
-            if(!idToUpdate){
+          
+            if(!requestData.id){
                  return await this.saveData(requestData, modelName );
-                // console.log("idnotfound")
+        
             }else{
-// console.log("idfound")
-            return await this.update(requestData, modelName , idToUpdate );
+
+            return await this.update(requestData, modelName );
         }
         } catch (err) {
             throw err;
@@ -56,10 +55,10 @@ class CommonDao {
      * @param {Model} model - Sequelize model for the object type.
      * @returns {Promise<Object|null>} - Updated object if found, null if not found.
      */
-    async update(id, Data, model) {
+    async update( Data, model) {
         try {
             const updatedObject = await model.update(Data, {
-                where: { id: id }
+                where: { id: Data.id }
             });
             if (updatedObject) {
                 return updatedObject;

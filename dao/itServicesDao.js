@@ -45,9 +45,9 @@ class ITServicesDao {
  * @since 06 jul 2024
  * 
  */
-    async updateITService(idToUpdate, updateData) {
+    async updateITService( updateData) {
         try {
-            const updatedService = await this.commonDao.saveData(idToUpdate, updateData, ITservice);
+            const updatedService = await this.commonDao.saveData( updateData, ITservice);
 
             if (updatedService) {
                 return {
