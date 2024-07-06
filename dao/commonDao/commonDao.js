@@ -17,13 +17,21 @@ class CommonDao {
      * @param {Model} modelName - Sequelize model for the object type.
      * @returns {Promise<Object>} - Saved or updated object.
      */
-    async saveData(requestData, modelName) {
+    async saveData(requestData, modelName , idToUpdate) {
         try {
             // requestData.id = CommonDao.generateId(modelName.name);
-            return await this.save(requestData, modelName);
+
+            if(!idToUpdate){
+                 return await this.saveData(requestData, modelName );
+                // console.log("idnotfound")
+            }else{
+// console.log("idfound")
+            return await this.update(requestData, modelName , idToUpdate );
+        }
         } catch (err) {
             throw err;
         }
+        
     }
 
     /**
@@ -43,22 +51,23 @@ class CommonDao {
  
     /**
      * Updates an existing object by its ID using the provided model.
-     * @param {String} idToUpdate - ID of the object to update.
-     * @param {Object} updatedData - Updated data to replace the existing object.
-     * @param {Model} modelName - Sequelize model for the object type.
+     * @param {String} id - ID of the object to update.
+     * @param {Object} Data - Updated data to replace the existing object.
+     * @param {Model} model - Sequelize model for the object type.
      * @returns {Promise<Object|null>} - Updated object if found, null if not found.
      */
-    async update(idToUpdate, updatedData, modelName) {
+    async update(id, Data, model) {
         try {
-            const updatedObject = await modelName.update(updatedData, {
-                where: { id: idToUpdate }
+            const updatedObject = await model.update(Data, {
+                where: { id: id }
             });
             if (updatedObject) {
                 return updatedObject;
             } else {
-                console.log('Data not found.');
-                return null; // Return null if object with idToUpdate is not found
+               
+                return null; // Return null if object with id is not found
             }
+            
         } catch (err) {
             throw err;
         }
@@ -78,7 +87,12 @@ class CommonDao {
 
     // upload 
     // In CommonDao.js
-
+/**
+ * CommonDao: Provides common methods for CRUD operations.
+ * @author Sidharth Guleria
+ * @since 06 jul 2024
+ * 
+ */
 static getUploadMiddleware() {
     const storage = multer.memoryStorage(); // Use memory storage
 

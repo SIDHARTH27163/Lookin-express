@@ -3,7 +3,12 @@ const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../database/mysql/db');
 const { generateId } = require('../utils/utils'); // Import the generateId function
 const Image = require('./ImageModel');
-
+/**
+ *  model class for iit services
+ * @author Sidharth Guleria and Vishal kumar
+ * @since 06 jul 2024
+ * 
+ */
 class ITservice extends Model {}
 
 ITservice.init({
