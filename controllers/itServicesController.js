@@ -19,6 +19,13 @@ class ITServicesController
             const serviceData = req.body;
             const fileData = req.file; // Access uploaded file data
 
+            console.log('serviceData:', serviceData); // Add this line
+            console.log('fileData:', fileData); // Add this line
+
+            if (!fileData) {
+                throw new Error('No file uploaded');
+            }
+
             const result = await this.ITServicesDao.saveITService(serviceData, fileData);
             res.status(201).json(result);
         } catch (error) {

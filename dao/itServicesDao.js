@@ -1,7 +1,7 @@
-// itServicesDao.js
-
-const ITservice = require('../models/ITServicesModel'); // Assuming this is your Sequelize model for IT services
+// dao/itServicesDao.js
+const ITservice = require('../models/ITServicesModel');
 const CommonDao = require('../dao/commonDao/commonDao');
+const Image = require('../models/ImageModel');
 
 class ITServicesDao {
     constructor() {
@@ -19,10 +19,10 @@ class ITServicesDao {
             }
 
             if (fileData) {
-                serviceData.image = fileData.path; // Update serviceData with imagePath
+                const imageId = await this.commonDao.uploadImage(fileData); // Upload image and get image ID
+                serviceData.imageId = imageId; // Update serviceData with image ID
             }
 
-         
             const result = await this.commonDao.saveData(serviceData, ITservice);
             return {
                 status: 201,
@@ -34,8 +34,6 @@ class ITServicesDao {
             throw new Error('Error inserting IT services: ' + error.message);
         }
     }
-
-
     async updateITService(idToUpdate, updateData) {
         try {
             const updatedService = await this.commonDao.update(idToUpdate, updateData, ITservice);

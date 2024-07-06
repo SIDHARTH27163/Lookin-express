@@ -1,6 +1,8 @@
 const multer = require('multer');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
+const fs = require('fs');
+const Image = require('../../models/ImageModel');
 
 /**
  * CommonDao: Provides common methods for CRUD operations.
@@ -17,7 +19,7 @@ class CommonDao {
      */
     async saveData(requestData, modelName) {
         try {
-            requestData.id = CommonDao.generateId(modelName.name);
+            // requestData.id = CommonDao.generateId(modelName.name);
             return await this.save(requestData, modelName);
         } catch (err) {
             throw err;
@@ -75,35 +77,42 @@ class CommonDao {
     }
 
     // upload 
-    static getUploadMiddleware() {
-        const storage = multer.diskStorage({
-            destination: 'uploads/', // Adjust destination folder as needed
-            filename: (req, file, cb) => {
-                const uniqueFilename = uuidv4();
-                const extension = path.extname(file.originalname);
-                cb(null, `${uniqueFilename}${extension}`);
-            }
+    // In CommonDao.js
+
+static getUploadMiddleware() {
+    const storage = multer.memoryStorage(); // Use memory storage
+
+    return multer({ storage: storage });
+}
+
+async uploadImage(fileData) {
+    try {
+        if (!fileData.buffer) {
+            throw new Error('File buffer is undefined');
+        }
+
+        const uniqueFilename = uuidv4(); // Generate unique filename using UUID
+        const extension = path.extname(fileData.originalname);
+        const imagePath = `uploads/${uniqueFilename}${extension}`; // Adjust path as needed
+
+        // Save file to disk
+        await fs.promises.writeFile(imagePath, fileData.buffer); // Use fileData.buffer instead of fileData.path
+
+        // Save image details in the database
+        const image = await Image.create({
+            filename: fileData.originalname,
+            path: imagePath,
+            mimetype: fileData.mimetype,
+            size: fileData.size
         });
 
-        return multer({ storage: storage });
+        return image.id; // Return image ID
+    } catch (error) {
+        console.error('Error uploading image:', error);
+        throw new Error('Error uploading image: ' + error.message);
     }
+}
 
-    async uploadImage(fileData) {
-        try {
-            const uniqueFilename = uuidv4(); // Generate unique filename using UUID
-            const extension = path.extname(fileData.originalname);
-            const imagePath = `uploads/${uniqueFilename}${extension}`; // Adjust path as needed
-
-            // Save file to disk
-            await fs.promises.writeFile(imagePath, fileData.buffer);
-
-            // Return the image path or URL
-            return imagePath;
-        } catch (error) {
-            console.error('Error uploading image:', error);
-            throw new Error('Error uploading image: ' + error.message);
-        }
-    }
 }
 
 module.exports = CommonDao;

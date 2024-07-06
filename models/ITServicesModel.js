@@ -1,13 +1,9 @@
+// models/ITServicesModel.js
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../database/mysql/db');
-const CommonDao = require('../dao/commonDao/commonDao');
+const { generateId } = require('../utils/utils'); // Import the generateId function
+const Image = require('./ImageModel');
 
-/**
- * This file is created by Vishal Kumar
- * 
- * @author Vishal Kumar
- * @since 30 June 2024
- */
 class ITservice extends Model {}
 
 ITservice.init({
@@ -15,7 +11,8 @@ ITservice.init({
         type: DataTypes.STRING,
         primaryKey: true,
         allowNull: false,
-        defaultValue: () => CommonDao.generateId('it_services') // Generate custom ID
+        unique: true,
+        defaultValue: () => generateId('it_services') // Use generateId from utils
     },
     name: {
         type: DataTypes.STRING,
@@ -29,9 +26,13 @@ ITservice.init({
         type: DataTypes.TEXT,
         allowNull: false
     },
-    image: {
-        type: DataTypes.BLOB,
-        allowNull: false
+    imageId: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        references: {
+            model: Image,
+            key: 'id'
+        }
     },
     created_by: {
         type: DataTypes.STRING,
@@ -43,13 +44,15 @@ ITservice.init({
     },
     timestamp: {
         type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW
+        defaultValue: DataTypes.NOW // Default timestamp value
     }
 }, {
     sequelize,
     modelName: 'ITservice',
     tableName: 'it_services',
-    timestamps: false
+    timestamps: false // Disable automatic timestamps
 });
+
+ITservice.belongsTo(Image, { foreignKey: 'imageId' });
 
 module.exports = ITservice;

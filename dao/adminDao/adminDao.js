@@ -27,12 +27,9 @@ class AdminDao {
             // Hash the password
             const hashedPassword = await bcrypt.hash(admin.password, 10);
 
-            // Generate adminId using CommonDao
-            const adminId = CommonDao.generateId('Admin');
-
             // Create the new admin data object
             const newAdminData = {
-                userId: adminId,
+               
                 email: admin.email,
                 name: admin.name,
                 phoneNumber: admin.phoneNumber,

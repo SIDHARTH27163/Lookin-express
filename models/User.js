@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../database/mysql/db');
-
+const { generateId } = require('../utils/utils');
 /**
  * This file is used for database integration for user related operations
  * 
@@ -23,9 +23,7 @@ const User = sequelize.define('User', {
         primaryKey: true,
         allowNull: false,
         unique: true,
-        validate: {
-            isAlphanumeric: true
-        }
+        defaultValue: () => generateId('user')
     },
     status: {
         type: DataTypes.INTEGER,
