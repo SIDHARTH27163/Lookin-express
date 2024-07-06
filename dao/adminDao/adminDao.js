@@ -28,13 +28,7 @@ class AdminDao {
             const hashedPassword = await bcrypt.hash(admin.password, 10);
 
             // Create the new admin data object
-            const newAdminData = {
-               
-                email: admin.email,
-                name: admin.name,
-                phoneNumber: admin.phoneNumber,
-                password: hashedPassword,
-            };
+          
 /**
      * provide the insertion opertaion
      * 
@@ -44,7 +38,10 @@ class AdminDao {
      * @returns 
      */
             // Save the new admin using CommonDao
-            const newAdmin = await new CommonDao().saveData(newAdminData, Admin);
+            admin.password = await bcrypt.hash(admin.password, 10);
+
+            // Save the new admin using CommonDao
+            const newAdmin = await new CommonDao().save(admin, Admin);
 
             return {
                 status: 201,
