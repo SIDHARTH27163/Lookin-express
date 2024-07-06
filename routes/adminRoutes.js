@@ -27,8 +27,14 @@ const upload = CommonDao.getUploadMiddleware();
 router.post('/create', (req, res) => adminController.createAdmin(req, res));
 router.post('/admin_login', (req, res) => adminController.login(req, res));
 router.get('/getusers', (req, res) => adminController.users(req, res));
+/**
+ * CommonDao: multer integration Provides fucntionality of uploading images.
+ * @author Sidharth Guleria
+ * @since 06 jul 2024
+ * 
+ */
 router.post('/add-it-service', upload.single('image'), (req, res) => itServicesController.saveITService(req, res)); // Handle file upload with multer
-router.get('/update-it-services/:id', (req, res) => itServicesController.updateitServices(req, res));
+router.put('/update-it-service', (req, res) => itServicesController.updateitServices(req, res));
 
 module.exports = router;
 

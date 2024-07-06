@@ -4,7 +4,12 @@ const sequelize = require('../database/mysql/db');
 const { generateId } = require('../utils/utils'); // Import the generateId function
 
 class Image extends Model {}
-
+/**
+ * Image model.
+ * @author Sidharth Guleria
+ * @since 06 jul 2024
+ * 
+ */
 Image.init({
     id: {
         type: DataTypes.STRING,

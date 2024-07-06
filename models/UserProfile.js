@@ -2,6 +2,12 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../database/mysql/db');
 const User = require('./User');
 const { generateId } = require('../utils/utils');
+/**
+ *]
+ * @author Sidharth Guleria
+ * @since 06 jul 2024
+ * 
+ */
 const UserProfile = sequelize.define('UserProfile', {
     profileId: {
         type: DataTypes.STRING,

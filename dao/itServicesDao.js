@@ -2,7 +2,12 @@
 const ITservice = require('../models/ITServicesModel');
 const CommonDao = require('../dao/commonDao/commonDao');
 const Image = require('../models/ImageModel');
-
+/**
+ * CommonDao: Provides common methods for CRUD operations.
+ * @author Vishal
+ * @since 06 jul 2024
+ * 
+ */
 class ITServicesDao {
     constructor() {
         this.commonDao = new CommonDao();
@@ -34,9 +39,15 @@ class ITServicesDao {
             throw new Error('Error inserting IT services: ' + error.message);
         }
     }
-    async updateITService(idToUpdate, updateData) {
+    /**
+ * CommonDao: Provides update functionality.
+ * @author Sidharth Guleria
+ * @since 06 jul 2024
+ * 
+ */
+    async updateITService( updateData) {
         try {
-            const updatedService = await this.commonDao.update(idToUpdate, updateData, ITservice);
+            const updatedService = await this.commonDao.saveData( updateData, ITservice);
 
             if (updatedService) {
                 return {
