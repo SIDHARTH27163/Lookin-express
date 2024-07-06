@@ -44,7 +44,7 @@ class ITServicesController
     
 
         try {
-            const result = await this.ITServicesDao.getAllITervices();
+            const result = await this.ITServicesDao.getAllITServices();
             res.json(result);
         } catch (error) {
             res.status(500).json({ message: error.message });
