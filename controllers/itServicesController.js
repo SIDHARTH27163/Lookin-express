@@ -14,21 +14,23 @@ class ITServicesController
      * @param {*} serviceData 
      * @returns 
      */
-    async saveITService(req, res)
-    {
+     async saveITService(req, res) {
         try {
-            // If request data have id then we update the IT Service otherwise we create a new IT service.
-            if(req.body.id)
-            {
-                const result = await this.ITServicesDao.updateITService(req.body);
+            const serviceData = req.body;
+            const fileData = req.file; // Access uploaded file data
+
+            console.log('serviceData:', serviceData); // Add this line
+            console.log('fileData:', fileData); // Add this line
+
+            if (!fileData) {
+                throw new Error('No file uploaded');
             }
-            else{
-                const result = await this.ITServicesDao.saveITService(req.body);
-            }
+
+            const result = await this.ITServicesDao.saveITService(serviceData, fileData);
             res.status(201).json(result);
-        } catch (err) {
-            console.error('Error in API:', err);
-            res.status(500).json({ message: err.message });
+        } catch (error) {
+            console.error('Error in API:', error);
+            res.status(500).json({ message: error.message });
         }
     }
 
@@ -50,6 +52,29 @@ class ITServicesController
             res.status(500).json({ message: error.message });
         }
     }
+ /**
+     * This API used for updating the ITservices.
+     * 
+     * @author Vishal
+     * @since 06 July 2024
+     * @param {*} serviceData 
+     * @returns 
+     */
+
+// itServicesController.js
+
+async updateitServices(req, res) {
+    try {
+        const { id } = req.params; // Extract id from request params
+        const updateData = req.body; // Assuming update data comes from request body
+
+        const result = await this.ITServicesDao.updateITService(id, updateData); // Pass id and updateData
+
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
 
 }
 module.exports = ITServicesController;

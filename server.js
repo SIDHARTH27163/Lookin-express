@@ -34,3 +34,6 @@ createTables()
     console.error('Initialization failed:', error.message);
     process.exit(1);
   });
+    // app.listen(port, () => {
+    //   console.log(`Server running on http://localhost:${port}`);
+    // });

@@ -1,5 +1,9 @@
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const multer = require('multer');
+const path = require('path');
+const { v4: uuidv4 } = require('uuid');
+const fs = require('fs');
+const Image = require('../../models/ImageModel');
+
 /**
  * CommonDao: Provides common methods for CRUD operations.
  * @author Vishal 
@@ -10,16 +14,13 @@ class CommonDao {
     /**
      * Saves or updates an object based on the presence of an id in requestData.
      * @param {Object} requestData - Data to be saved or updated.
-     * @param {Model} modelName - Mongoose model for the object type.
+     * @param {Model} modelName - Sequelize model for the object type.
      * @returns {Promise<Object>} - Saved or updated object.
      */
     async saveData(requestData, modelName) {
         try {
-            if (!requestData.id) {
-                return await this.save(requestData, modelName);
-            } else {
-                return await this.update(requestData.id, requestData, modelName);
-            }
+            // requestData.id = CommonDao.generateId(modelName.name);
+            return await this.save(requestData, modelName);
         } catch (err) {
             throw err;
         }
@@ -28,41 +29,42 @@ class CommonDao {
     /**
      * Saves a new object using the provided model.
      * @param {Object} requestData - Data to be saved.
-     * @param {Model} modelName - Mongoose model for the object type.
+     * @param {Model} modelName - Sequelize model for the object type.
      * @returns {Promise<Object>} - Newly created object.
      */
     async save(requestData, modelName) {
         try {
-            const newDataCreate = await modelName.create(requestData);;
+            const newDataCreate = await modelName.create(requestData);
             return newDataCreate;
         } catch (err) {
             throw err;
         }
     }
-
+ 
     /**
      * Updates an existing object by its ID using the provided model.
      * @param {String} idToUpdate - ID of the object to update.
      * @param {Object} updatedData - Updated data to replace the existing object.
-     * @param {Model} modelName - Mongoose model for the object type.
+     * @param {Model} modelName - Sequelize model for the object type.
      * @returns {Promise<Object|null>} - Updated object if found, null if not found.
      */
     async update(idToUpdate, updatedData, modelName) {
         try {
-            const updatedObject = await modelName.findByIdAndUpdate(idToUpdate, updatedData, { new: true });
+            const updatedObject = await modelName.update(updatedData, {
+                where: { id: idToUpdate }
+            });
             if (updatedObject) {
                 return updatedObject;
             } else {
                 console.log('Data not found.');
-                return 'Data not found.'; // Return null if object with idToUpdate is not found
+                return null; // Return null if object with idToUpdate is not found
             }
         } catch (err) {
             throw err;
         }
     }
-
-/**
-     * provide the id genrator operation
+    /**
+     * Provide the ID generator operation
      * 
      * @author Sidharth Guleria
      * @since 04 Jul 2024
@@ -73,5 +75,44 @@ class CommonDao {
         const prefix = tableName.substring(0, 3).toLowerCase();
         return `${prefix}${Date.now()}${Math.floor(Math.random() * 1000)}`;
     }
+
+    // upload 
+    // In CommonDao.js
+
+static getUploadMiddleware() {
+    const storage = multer.memoryStorage(); // Use memory storage
+
+    return multer({ storage: storage });
 }
+
+async uploadImage(fileData) {
+    try {
+        if (!fileData.buffer) {
+            throw new Error('File buffer is undefined');
+        }
+
+        const uniqueFilename = uuidv4(); // Generate unique filename using UUID
+        const extension = path.extname(fileData.originalname);
+        const imagePath = `uploads/${uniqueFilename}${extension}`; // Adjust path as needed
+
+        // Save file to disk
+        await fs.promises.writeFile(imagePath, fileData.buffer); // Use fileData.buffer instead of fileData.path
+
+        // Save image details in the database
+        const image = await Image.create({
+            filename: fileData.originalname,
+            path: imagePath,
+            mimetype: fileData.mimetype,
+            size: fileData.size
+        });
+
+        return image.id; // Return image ID
+    } catch (error) {
+        console.error('Error uploading image:', error);
+        throw new Error('Error uploading image: ' + error.message);
+    }
+}
+
+}
+
 module.exports = CommonDao;

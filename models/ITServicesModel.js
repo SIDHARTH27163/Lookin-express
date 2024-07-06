@@ -1,18 +1,18 @@
-const { DataTypes } = require('sequelize');
+// models/ITServicesModel.js
+const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../database/mysql/db');
-/**
-     * This file is created by vishal kumar
-     * 
-     * @author Vishal kumar
-     * @since 30 June 2024
-     *  
-     * @returns 
-     */
-const ITservice = sequelize.define('it_services', {
+const { generateId } = require('../utils/utils'); // Import the generateId function
+const Image = require('./ImageModel');
+
+class ITservice extends Model {}
+
+ITservice.init({
     id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true
+        type: DataTypes.STRING,
+        primaryKey: true,
+        allowNull: false,
+        unique: true,
+        defaultValue: () => generateId('it_services') // Use generateId from utils
     },
     name: {
         type: DataTypes.STRING,
@@ -26,29 +26,33 @@ const ITservice = sequelize.define('it_services', {
         type: DataTypes.TEXT,
         allowNull: false
     },
-    image:{
-        type: DataTypes.BLOB,
-        allowNull: false
+    imageId: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        references: {
+            model: Image,
+            key: 'id'
+        }
     },
-    created_by:{
-        type: DataTypes.BLOB,
+    created_by: {
+        type: DataTypes.STRING,
         allowNull: true
     },
-    updated_by:{
-        type: DataTypes.BLOB,
+    updated_by: {
+        type: DataTypes.STRING,
         allowNull: true
     },
     timestamp: {
         type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW
+        defaultValue: DataTypes.NOW // Default timestamp value
     }
-/**
-     * last three feilds updated   by Sid 
-     * 
-     * @author Sidharth Guleria
-     * @since 04 Jul 2024
-     *  
-     * @returns 
-     */
+}, {
+    sequelize,
+    modelName: 'ITservice',
+    tableName: 'it_services',
+    timestamps: false // Disable automatic timestamps
 });
+
+ITservice.belongsTo(Image, { foreignKey: 'imageId' });
+
 module.exports = ITservice;

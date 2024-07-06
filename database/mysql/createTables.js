@@ -18,7 +18,7 @@ async function createTables() {
         UserProfile.belongsTo(User, { foreignKey: 'user_id' });
 
         // Sync the models with the database, only create if not exists
-        await sequelize.sync({ alter: true });
+        await sequelize.sync();
         console.log('Tables created successfully');
     } catch (error) {
         console.error('Error creating tables:', error.message);
