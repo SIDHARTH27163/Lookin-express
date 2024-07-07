@@ -35,6 +35,9 @@ router.get('/getusers', (req, res) => adminController.users(req, res));
  */
 router.post('/add-it-service', upload.single('image'), (req, res) => itServicesController.saveITService(req, res)); // Handle file upload with multer
 router.put('/update-it-service', (req, res) => itServicesController.updateitServices(req, res));
-
+router.get('/get-it-service', (req, res) => itServicesController.getAllITServices(req, res));
+router.post('/add-case-study', (req, res) => itServicesController.saveCaseStudies(req, res));
+router.put('/update-case-study', (req, res) => itServicesController.updateCaseStudies(req, res));
+router.get('/get-case-studies', (req, res) => itServicesController.getAllITCaseStudies(req, res));
 module.exports = router;
 

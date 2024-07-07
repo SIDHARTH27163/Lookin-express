@@ -1,25 +1,25 @@
-// models/ITServicesModel.js
+// models/ITCaseStudiesModel.js
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../database/mysql/db');
 const { generateId } = require('../utils/utils'); // Import the generateId function
 const Image = require('./ImageModel');
 /**
- *  model class for iit services
- * @author Sidharth Guleria and Vishal kumar
- * @since 06 jul 2024
+ *  model class for it case studies
+ * @author Vishal kumar
+ * @since 10 jul 2024
  * 
  */
-class ITservice extends Model {}
+class ITCaseStudiesModel extends Model {}
 
-ITservice.init({
+ITCaseStudiesModel.init({
     id: {
         type: DataTypes.STRING,
         primaryKey: true,
         allowNull: false,
         unique: true,
-        defaultValue: () => generateId('it_services') // Use generateId from utils
+        defaultValue: () => generateId('it_case_studies') // Use generateId from utils
     },
-    name: {
+    heading: {
         type: DataTypes.STRING,
         allowNull: false
     },
@@ -31,7 +31,7 @@ ITservice.init({
         type: DataTypes.TEXT,
         allowNull: false
     },
-    imageId: {
+    bannner_image_id: {
         type: DataTypes.STRING,
         allowNull: false,
         references: {
@@ -53,11 +53,11 @@ ITservice.init({
     }
 }, {
     sequelize,
-    modelName: 'ITservice',
-    tableName: 'it_services',
+    modelName: 'ITCaseStudiesModel',
+    tableName: 'it_case_studies',
     timestamps: false // Disable automatic timestamps
 });
 
-ITservice.belongsTo(Image, { foreignKey: 'imageId' });
+ITCaseStudiesModel.belongsTo(Image, { foreignKey: 'bannner_image_id' });
 
-module.exports = ITservice;
+module.exports = ITCaseStudiesModel;

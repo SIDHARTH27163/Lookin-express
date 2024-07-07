@@ -34,25 +34,7 @@ class ITServicesController
         }
     }
 
-    /**
-     * This API used for get all ITservices.
-     * 
-     * @author Vishal
-     * @since 02 July 2024
-     * @param {*} serviceData 
-     * @returns 
-     */
-    async itServices(req, res) {
-    
-
-        try {
-            const result = await this.ITServicesDao.getAllITServices();
-            res.json(result);
-        } catch (error) {
-            res.status(500).json({ message: error.message });
-        }
-    }
- /**
+   /**
      * This API used for updating the ITservices.
      * 
      * @author Vishal
@@ -60,9 +42,6 @@ class ITServicesController
      * @param {*} serviceData 
      * @returns 
      */
-
-// itServicesController.js
-
 async updateitServices(req, res) {
     try {
       
@@ -71,6 +50,84 @@ async updateitServices(req, res) {
         const result = await this.ITServicesDao.updateITService( updateData); // Pass id and updateData
 
         res.json(result);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+ /**
+ * This API used for getting the ITservices by filter.
+ * 
+ * @author Vishal
+ * @since 07 jul 2024
+ * @param {*}  
+ * @returns 
+ */
+async getAllITServices(req,res) {
+    try {
+        const requestFilter = req.body;
+        const itServices = await ITServicesDao.getITServices(requestFilter);
+        res.json(itServices);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+/**
+ * This section for IT Case Studies
+ */
+
+/**
+ * This API used for create IT case study by logged in Admin.
+ * 
+ * @author Vishal
+ * @since 07 jul 2024
+ * @param {*} serviceData 
+ * @returns 
+ */
+async saveCaseStudies(req,res)
+{
+    try {
+        const itCaseStudies = await ITServicesDao.saveCaseStudy(req.body); 
+        res.json(itCaseStudies);
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+/**
+ * This API used for update IT case study by logged in Admin.
+ * 
+ * @author Vishal
+ * @since 07 jul 2024
+ * @param {*} serviceData 
+ * @returns 
+ */
+async updateCaseStudies(req,res)
+{
+    try {
+        const updateITCaseStudy = await ITServicesDao.updateCaseStudy(req.body); 
+        res.json(updateITCaseStudy);
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+ /**
+ * This API used for getting the ITCaseStudies by filter.
+ * 
+ * @author Vishal
+ * @since 07 jul 2024
+ * @param {*}  
+ * @returns 
+ */
+ async getAllITCaseStudies(req,res) {
+    try {
+        const requestFilter = req.body;
+        const itCaseStudies = await ITServicesDao.getITCaseStudies(requestFilter);
+        res.json(itCaseStudies);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
