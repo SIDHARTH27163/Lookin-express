@@ -7,12 +7,6 @@
      *  
      * @returns 
      */
-// adminRoutes.js
-
-// routes/adminRoutes.js
-
-// routes/adminRoutes.js
-
 // routes/adminRoutes.js
 const express = require('express');
 const AdminController = require('../controllers/adminController');
@@ -26,18 +20,10 @@ const itServicesController = new ITServicesController();
 const upload = CommonDao.getUploadMiddleware();
 
 router.post('/create', (req, res) => adminController.createAdmin(req, res));
-router.post('/admin_login', authMiddleware , (req, res) => adminController.login(req, res));
-router.post('/admin_logout', (req, res) => adminController.logout(req, res));
-router.get('/getusers', (req, res) => adminController.users(req, res));
-/**
- * CommonDao: multer integration Provides fucntionality of uploading images.
- * @author Sidharth Guleria
- * @since 06 jul 2024
- * 
- */
-
+router.post('/admin_login', (req, res) => adminController.login(req, res));
+router.post('/admin_logout', authMiddleware, (req, res) => adminController.logout(req, res));
+router.get('/getusers', authMiddleware, (req, res) => adminController.users(req, res));
 router.post('/add-it-service', upload.single('image'), (req, res) => itServicesController.saveITService(req, res)); // Handle file upload with multer
 router.put('/update-it-service', (req, res) => itServicesController.updateitServices(req, res));
 
 module.exports = router;
-

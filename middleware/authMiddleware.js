@@ -7,12 +7,10 @@
  * 
  * @returns 
  */
-// middleware/authMiddleware.js
-const authMiddleware = (req, res, next) => {
+module.exports = function isLoggedIn(req, res, next) {
     if (req.session && req.session.adminId) {
-        return res.status(400).json({ message: 'User already logged in' });
+        next();
+    } else {
+        res.status(401).json({ message: 'Unauthorized. Please log in.' });
     }
-    next();
 };
-
-module.exports = authMiddleware;

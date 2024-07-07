@@ -1,6 +1,5 @@
 // dao/AdminDao.js
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const Admin = require('../../models/User');
 const AdminProfile = require('../../models/UserProfile');
 const CommonDao = require('../commonDao/commonDao');
@@ -24,10 +23,6 @@ class AdminDao {
                     message: 'User already exists'
                 };
             }
-
-           
-
-            // Create the new admin data object
           
 /**
      * provide the insertion opertaion
@@ -69,7 +64,7 @@ class AdminDao {
         try {
             const admin = await this.getAdminByEmail(email);
             if (!admin) {
-                return { status: 404, message: 'Admin not found' };
+                return { status: 404, message: 'User not found' };
             }
 
             const isPasswordValid = await bcrypt.compare(password, admin.password);
@@ -94,26 +89,15 @@ class AdminDao {
     }
     async logoutAdmin(req) {
         try {
-            if (req.session) {
-                const sessionId = req.session.id; // Assuming session ID is stored in req.session.id
+            
+            const result = await new CommonDao().logout(req);
 
-                req.session.destroy(async err => {
-                    if (err) {
-                        throw new Error('Error logging out: ' + err.message);
-                    }
-
-                    // Delete session details from the session table
-                    try {
-                        await Session.destroy({ where: { sessionId } });
-                    } catch (err) {
-                        throw new Error('Error deleting session details: ' + err.message);
-                    }
-                });
-
-                return { status: 200, message: 'Logout successful' };
-            } else {
-                return { status: 400, message: 'No active session' };
-            }
+            return {
+                status: 200,
+              
+                result:result
+             
+            };
         } catch (error) {
             console.log(error);
             throw new Error('Error logging out: ' + error.message);
