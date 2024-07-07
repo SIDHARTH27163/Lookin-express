@@ -1,9 +1,9 @@
 // dao/AdminDao.js
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const Admin = require('../../models/User');
 const AdminProfile = require('../../models/UserProfile');
 const CommonDao = require('../commonDao/commonDao');
+const Session = require('../../models/SessionModel');
 /**
      * This file is used as admin point for the project 
      * 
@@ -23,11 +23,6 @@ class AdminDao {
                     message: 'User already exists'
                 };
             }
-
-            // Hash the password
-            const hashedPassword = await bcrypt.hash(admin.password, 10);
-
-            // Create the new admin data object
           
 /**
      * provide the insertion opertaion
@@ -65,22 +60,47 @@ class AdminDao {
         }
     }
 
-    async loginAdmin(email, password) {
+    async loginAdmin(req, email, password) {
         try {
             const admin = await this.getAdminByEmail(email);
             if (!admin) {
-                throw new Error('Admin not found');
+                return { status: 404, message: 'User not found' };
             }
 
             const isPasswordValid = await bcrypt.compare(password, admin.password);
             if (!isPasswordValid) {
-                throw new Error('Invalid password');
+                return { status: 401, message: 'Invalid password' };
             }
 
-            const token = jwt.sign({ id: admin.id, email: admin.email }, config.secretKEY, { expiresIn: '1h' });
-            return token;
+            req.session.adminId = admin.userId;
+            req.session.adminEmail = admin.email;
+
+            await Session.create({
+                userId: admin.userId,
+                sessionId:req.session.id,
+                loginTime: new Date()
+            });
+
+            return { status: 200, message: 'Login successful', sessionId: req.session.id , userdetails:admin };
         } catch (error) {
+            console.log(error);
             throw new Error('Error logging in admin: ' + error.message);
+        }
+    }
+    async logoutAdmin(req) {
+        try {
+            
+            const result = await new CommonDao().logout(req);
+
+            return {
+                status: 200,
+              
+                result:result
+             
+            };
+        } catch (error) {
+            console.log(error);
+            throw new Error('Error logging out: ' + error.message);
         }
     }
 

@@ -3,7 +3,7 @@ const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 const Image = require('../../models/ImageModel');
-
+const Session = require('../../models/SessionModel');
 /**
  * CommonDao: Provides common methods for CRUD operations.
  * @author Vishal 
@@ -125,7 +125,33 @@ async uploadImage(fileData) {
         throw new Error('Error uploading image: ' + error.message);
     }
 }
+async logout(req) {
+    try{
+        if (req.session) {
+            const sessionId = req.session.id; // Assuming session ID is stored in req.session.id
 
+            req.session.destroy(async err => {
+                if (err) {
+                    throw new Error('Error logging out: ' + err.message);
+                }
+
+                // Delete session details from the session table
+                try {
+                    await Session.destroy({ where: { sessionId } });
+                } catch (err) {
+                    throw new Error('Error deleting session details: ' + err.message);
+                }
+            });
+
+            return { status: 200, message: 'Logout successful' };
+        } else {
+            return { status: 400, message: 'No active session' };
+        }
+   } catch (error) {
+        
+        throw new Error('Error during logout: ' + error.message);
+    }
+}
 }
 
 module.exports = CommonDao;
