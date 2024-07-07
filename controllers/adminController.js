@@ -25,16 +25,22 @@ class AdminController {
 
     async login(req, res) {
         const { email, password } = req.body;
-        
 
         try {
-            const result = await this.adminDao.loginAdmin(email, password);
+            const result = await this.adminDao.loginAdmin(req, email, password); // Passing req to set session
             res.json(result);
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
     }
-
+    async logout(req, res) {
+        try {
+            const result = await this.adminDao.logoutAdmin(req);
+            res.json(result);
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    }
     async users(req, res) {
     
 

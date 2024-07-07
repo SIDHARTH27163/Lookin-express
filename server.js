@@ -15,9 +15,14 @@ const config = require('./config/config');
 require('dotenv').config();
 const app = express();
 const port = config.server.port;
-
+const session = require('express-session');
 app.use(bodyParser.json());
-
+app.use(session({
+  secret: 'sdjfvfvcvwhcv sbncvsdghwetydfwgh12123123', // Replace with a secure secret key
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false } // Set to true if using HTTPS
+}));
 // User routes
 app.use('/api', userRoutes);
 app.use('/admin', adminRoutes);

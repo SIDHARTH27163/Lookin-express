@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const Admin = require('../../models/User');
 const AdminProfile = require('../../models/UserProfile');
 const CommonDao = require('../commonDao/commonDao');
+const Session = require('../../models/SessionModel');
 /**
      * This file is used as admin point for the project 
      * 
@@ -24,8 +25,7 @@ class AdminDao {
                 };
             }
 
-            // Hash the password
-            const hashedPassword = await bcrypt.hash(admin.password, 10);
+           
 
             // Create the new admin data object
           
@@ -65,22 +65,58 @@ class AdminDao {
         }
     }
 
-    async loginAdmin(email, password) {
+    async loginAdmin(req, email, password) {
         try {
             const admin = await this.getAdminByEmail(email);
             if (!admin) {
-                throw new Error('Admin not found');
+                return { status: 404, message: 'Admin not found' };
             }
 
             const isPasswordValid = await bcrypt.compare(password, admin.password);
             if (!isPasswordValid) {
-                throw new Error('Invalid password');
+                return { status: 401, message: 'Invalid password' };
             }
 
-            const token = jwt.sign({ id: admin.id, email: admin.email }, config.secretKEY, { expiresIn: '1h' });
-            return token;
+            req.session.adminId = admin.userId;
+            req.session.adminEmail = admin.email;
+
+            await Session.create({
+                userId: admin.userId,
+                sessionId:req.session.id,
+                loginTime: new Date()
+            });
+
+            return { status: 200, message: 'Login successful', sessionId: req.session.id , userdetails:admin };
         } catch (error) {
+            console.log(error);
             throw new Error('Error logging in admin: ' + error.message);
+        }
+    }
+    async logoutAdmin(req) {
+        try {
+            if (req.session) {
+                const sessionId = req.session.id; // Assuming session ID is stored in req.session.id
+
+                req.session.destroy(async err => {
+                    if (err) {
+                        throw new Error('Error logging out: ' + err.message);
+                    }
+
+                    // Delete session details from the session table
+                    try {
+                        await Session.destroy({ where: { sessionId } });
+                    } catch (err) {
+                        throw new Error('Error deleting session details: ' + err.message);
+                    }
+                });
+
+                return { status: 200, message: 'Logout successful' };
+            } else {
+                return { status: 400, message: 'No active session' };
+            }
+        } catch (error) {
+            console.log(error);
+            throw new Error('Error logging out: ' + error.message);
         }
     }
 
